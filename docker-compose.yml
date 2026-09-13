@@ -1,0 +1,16 @@
+#versao do docker
+version: '3.8' 
+
+#inicia o servico baixando a ultima versao do mongodb e o renomeia
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: blog_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+#Salva de forma permanente 
+volumes:
+  mongo_data:

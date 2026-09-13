@@ -1,0 +1,39 @@
+name: Integracao Continua (CI)
+
+#Executa toda vez que fizer push ou pull
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+
+    #Baixa a imagem do mongo e conecta ele na porta 
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+    #Baixa todos os arquivos para a maquina virtual
+    - name: Baixar o codigo do repositorio
+      uses: actions/checkout@v3
+
+    #Baixa a versao 20 do node
+    - name: Configurar o Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+
+    #Chama o install no terminal
+    - name: Instalar dependencias
+      run: npm install
+
+    #Roda o teste
+    - name: Rodar os testes unitarios
+      run: npm test
