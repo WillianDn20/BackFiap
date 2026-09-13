@@ -4,10 +4,9 @@ const app = express();
 
 const postRoutes = require('./routes/postRoutes'); 
 const userRoutes = require('./routes/userRoutes');
+const noticeRoutes = require('./routes/noticeRoutes'); // Importando a nova rota
 
 app.use(cors());
-
-// AUMENTO DO LIMITE: Agora aceita imagens PNG/JPEG grandes em Base64 (até 50MB)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -16,6 +15,7 @@ app.get('/ping', (req, res) => {
 });
 
 app.use('/posts', postRoutes);
+app.use('/notices', noticeRoutes); // Habilitando os avisos no servidor
 app.use('/', userRoutes); 
 
 module.exports = app;
