@@ -79,7 +79,32 @@ exports.addComment = async (req, res) => {
     await post.save();
     res.status(200).json(post);
   } catch (error) {
-    console.error(error);
+    console.error("Error adding comment:", error);
     res.status(500).json({ error: 'Error adding comment.' });
+  }
+};
+
+exports.deleteComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { userName, userRole } = req.query; // Recebe via query string na URL
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ error: 'Post not found.' });
+
+    const comment = post.comments.id(commentId);
+    if (!comment) return res.status(404).json({ error: 'Comment not found.' });
+
+    // Valida permissão: Professor ou o próprio autor do comentário
+    if (userRole === 'teacher' || comment.author === userName) {
+      post.comments.pull(commentId); // Remove o subdocumento de forma segura
+      await post.save();
+      return res.status(200).json(post);
+    } else {
+      return res.status(403).json({ error: 'Access denied. You can only delete your own comments.' });
+    }
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ error: 'Error deleting comment.' });
   }
 };
