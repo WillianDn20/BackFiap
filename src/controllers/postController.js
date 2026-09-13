@@ -21,8 +21,15 @@ exports.getPostById = async (req, res) => {
 
 exports.createPost = async (req, res) => {
   try {
-    const { title, content, author } = req.body;
-    const newPost = new Post({ title, content, author });
+    const { title, content, author, attachment } = req.body;
+    
+    const newPost = new Post({ 
+      title, 
+      content, 
+      author, 
+      attachment: attachment || '' 
+    });
+    
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
@@ -51,20 +58,24 @@ exports.deletePost = async (req, res) => {
   }
 };
 
+// --- AQUI ESTÁ A ATUALIZAÇÃO ---
 exports.searchPosts = async (req, res) => {
   try {
     const term = req.query.term || '';
     const posts = await Post.find({
       $or: [
         { title: { $regex: term, $options: 'i' } },
-        { content: { $regex: term, $options: 'i' } }
+        { content: { $regex: term, $options: 'i' } },
+        { author: { $regex: term, $options: 'i' } } // Agora também procura pelo nome do autor!
       ]
-    });
+    }).sort({ createdAt: -1 }); // Já aproveitei para ordenar do mais recente para o mais antigo
+    
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: 'Error searching posts.' });
   }
 };
+// -------------------------------
 
 exports.addComment = async (req, res) => {
   try {
@@ -87,7 +98,7 @@ exports.addComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
   try {
     const { postId, commentId } = req.params;
-    const { userName, userRole } = req.query; // Recebe via query string na URL
+    const { userName, userRole } = req.query;
 
     const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ error: 'Post not found.' });
@@ -95,9 +106,8 @@ exports.deleteComment = async (req, res) => {
     const comment = post.comments.id(commentId);
     if (!comment) return res.status(404).json({ error: 'Comment not found.' });
 
-    // Valida permissão: Professor ou o próprio autor do comentário
     if (userRole === 'teacher' || comment.author === userName) {
-      post.comments.pull(commentId); // Remove o subdocumento de forma segura
+      post.comments.pull(commentId);
       await post.save();
       return res.status(200).json(post);
     } else {

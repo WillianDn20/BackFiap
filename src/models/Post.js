@@ -13,15 +13,17 @@ const postSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
+  attachment: {
+    type: String,
+    default: ''
   },
   comments: [{
     text: { type: String, required: true },
     author: { type: String, required: true },
     date: { type: Date, default: Date.now }
   }]
+}, { 
+  timestamps: true // Cria e atualiza automaticamente os campos createdAt e updatedAt
 });
 
 module.exports = mongoose.model('Post', postSchema);

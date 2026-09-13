@@ -3,20 +3,19 @@ const cors = require('cors');
 const app = express();
 
 const postRoutes = require('./routes/postRoutes'); 
-const userRoutes = require('./routes/userRoutes'); // Importo as novas rotas de usuário
+const userRoutes = require('./routes/userRoutes');
 
 app.use(cors());
-app.use(express.json());
 
-// Teste do servidor
+// AUMENTO DO LIMITE: Agora aceita imagens PNG/JPEG grandes em Base64 (até 50MB)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 app.get('/ping', (req, res) => {
   res.status(200).json({ message: 'Pong! Servidor online.' });
 });
 
-// Aviso ao Express para usar os meus roteadores
 app.use('/posts', postRoutes);
-
-// Uso o userRoutes na raiz, assim ele cria o /login e o /registrar
 app.use('/', userRoutes); 
 
 module.exports = app;
