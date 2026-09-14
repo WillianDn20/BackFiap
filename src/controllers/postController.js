@@ -21,14 +21,16 @@ exports.getPostById = async (req, res) => {
 
 exports.createPost = async (req, res) => {
   try {
-    const { title, content, author, attachment } = req.body;
-    
+    const { title, content, author, attachments, coverColor, coverText } = req.body;
+
     const newPost = new Post({ 
       title, 
       content, 
       author, 
-      attachment: attachment || '' 
-    });
+      attachments: attachments || [], 
+      coverColor, 
+      coverText 
+});
     
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);

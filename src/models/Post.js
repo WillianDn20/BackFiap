@@ -8,11 +8,10 @@ const commentSchema = new mongoose.Schema({
 
 const postSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  content: { type: String, required: true },
+  content: { type: String, required: true }, // Texto puro sem códigos de imagem
   author: { type: String, required: true },
-  attachment: { type: String, default: '' },
-  coverColor: { type: String, default: '#3498db' }, // Cor da capa (padrão azul)
-  coverText: { type: String, maxLength: 30, default: '' }, // Texto de até 15 letras
+  attachments: [{ type: String }], // Até 3 anexos na lateral
+  coverImage: { type: String, default: '' }, // Nova imagem de capa (substitui o banner de cor)
   comments: [commentSchema]
 }, { 
   timestamps: true 
