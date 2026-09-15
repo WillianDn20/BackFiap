@@ -21,7 +21,7 @@ exports.getPostById = async (req, res) => {
 
 exports.createPost = async (req, res) => {
   try {
-    const { title, content, author, attachments, coverColor, coverText } = req.body;
+    const { title, content, author, attachments, coverColor, coverText, coverImage } = req.body;
 
     const newPost = new Post({ 
       title, 
@@ -29,7 +29,8 @@ exports.createPost = async (req, res) => {
       author, 
       attachments: attachments || [], 
       coverColor, 
-      coverText 
+      coverText,
+      coverImage
 });
     
     const savedPost = await newPost.save();
@@ -60,7 +61,6 @@ exports.deletePost = async (req, res) => {
   }
 };
 
-// --- AQUI ESTÁ A ATUALIZAÇÃO ---
 exports.searchPosts = async (req, res) => {
   try {
     const term = req.query.term || '';
@@ -68,16 +68,15 @@ exports.searchPosts = async (req, res) => {
       $or: [
         { title: { $regex: term, $options: 'i' } },
         { content: { $regex: term, $options: 'i' } },
-        { author: { $regex: term, $options: 'i' } } // Agora também procura pelo nome do autor!
+        { author: { $regex: term, $options: 'i' } } 
       ]
-    }).sort({ createdAt: -1 }); // Já aproveitei para ordenar do mais recente para o mais antigo
+    }).sort({ createdAt: -1 }); 
     
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: 'Error searching posts.' });
   }
 };
-// -------------------------------
 
 exports.addComment = async (req, res) => {
   try {

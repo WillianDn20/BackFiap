@@ -9,10 +9,10 @@ router.get('/:id', postController.getPostById);
 router.put('/:id', postController.updatePost);
 router.delete('/:id', postController.deletePost);
 
-// Rota de comentários padronizada em inglês
+// Rota de comentários
 router.post('/:id/comments', postController.addComment);
 
-// Rota para deletar um comentário passando o id do post e o id do comentário
+// Rota para deletar um comentário
 router.delete('/:postId/comments/:commentId', postController.deleteComment);
 
 module.exports = router;

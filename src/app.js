@@ -5,7 +5,7 @@ const app = express();
 const postRoutes = require('./routes/postRoutes'); 
 const userRoutes = require('./routes/userRoutes');
 const noticeRoutes = require('./routes/noticeRoutes');
-const eventRoutes = require('./routes/eventRoutes'); // <-- Nova rota de calendário
+const eventRoutes = require('./routes/eventRoutes'); 
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -17,7 +17,7 @@ app.get('/ping', (req, res) => {
 
 app.use('/posts', postRoutes);
 app.use('/notices', noticeRoutes); 
-app.use('/events', eventRoutes); // <-- Habilitando o calendário no servidor
+app.use('/events', eventRoutes); 
 app.use('/', userRoutes); 
 
 module.exports = app;
